@@ -1,0 +1,19 @@
+# Visual Studio
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Build
+**/bin/
+**/obj/
+
+# Secrets / local config
+appsettings.Development.json
+.env
+.env.*
+
+# Logs
+logs/
+*.log
