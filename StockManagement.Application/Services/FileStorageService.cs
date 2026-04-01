@@ -52,6 +52,19 @@ public class FileStorageService : IFileStorageService
         return ToMetadata(storedFile);
     }
 
+    public async Task<PagedResult<StoredFileMetadataDto>> QueryAsync(StoredFileQuery query)
+    {
+        var page = query.Page <= 0 ? 1 : query.Page;
+        var pageSize = Math.Clamp(query.PageSize <= 0 ? 20 : query.PageSize, 1, 100);
+        var tag = string.IsNullOrWhiteSpace(query.Tag) ? null : query.Tag.Trim().ToLowerInvariant();
+
+        var (items, totalItems) = await _storedFileRepository.QueryAsync(query.Search, tag, page, pageSize);
+        var mapped = items.Select(ToMetadata).ToArray();
+        var totalPages = totalItems == 0 ? 0 : (int)Math.Ceiling(totalItems / (double)pageSize);
+
+        return new PagedResult<StoredFileMetadataDto>(mapped, page, pageSize, totalItems, totalPages);
+    }
+
     public async Task<StoredFileMetadataDto?> GetMetadataAsync(Guid id)
     {
         var file = await _storedFileRepository.GetByIdAsync(id);

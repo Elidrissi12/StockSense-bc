@@ -18,6 +18,17 @@ public class FilesController : ControllerBase
         _fileStorageService = fileStorageService;
     }
 
+    [HttpGet]
+    public async Task<ActionResult<PagedResult<StoredFileMetadataDto>>> GetList(
+        [FromQuery] string? search = null,
+        [FromQuery] string? tag = null,
+        [FromQuery] int page = 1,
+        [FromQuery] int pageSize = 20)
+    {
+        var result = await _fileStorageService.QueryAsync(new StoredFileQuery(search, tag, page, pageSize));
+        return Ok(result);
+    }
+
     [HttpPost("upload")]
     [RequestSizeLimit(10 * 1024 * 1024)]
     public async Task<ActionResult<StoredFileMetadataDto>> Upload([FromForm] IFormFile file, [FromForm] string tag = "general")

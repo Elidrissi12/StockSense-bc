@@ -22,3 +22,16 @@ public record StoredFileDownloadDto(
     string ContentType,
     byte[] Data);
 
+public record StoredFileQuery(
+    string? Search,
+    string? Tag,
+    int Page = 1,
+    int PageSize = 20);
+
+public record PagedResult<T>(
+    IReadOnlyList<T> Items,
+    int Page,
+    int PageSize,
+    int TotalItems,
+    int TotalPages);
+
